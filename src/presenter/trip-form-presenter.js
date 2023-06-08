@@ -4,7 +4,6 @@ import RoutePointListView from '../view/route-point-list-view.js';
 import NoRoutePointView from '../view/no-route-point-view.js';
 import {render, replace} from '../framework/render.js';
 
-
 export default class TripFormPresenter {
   #routePointsModel = null;
   #destinationsModel = null;

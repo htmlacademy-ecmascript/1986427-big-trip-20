@@ -20,4 +20,3 @@ export default class TripInfoView extends AbstractView{
   }
 
 }
-
