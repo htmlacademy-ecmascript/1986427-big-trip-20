@@ -14,7 +14,6 @@ export default class TripFormPresenter {
 
   #tripRoutePoints = [];
 
-
   constructor({routePointListContainer, routePointsModel, destinationsModel, offersModel}) {
     this.#routePointListContainer = routePointListContainer;
     this.#routePointsModel = routePointsModel;
@@ -66,5 +65,4 @@ export default class TripFormPresenter {
       replace(routePointComponent, editFormViewComponent);
     }
   }
-
 }
