@@ -49,18 +49,15 @@ export default class TripFormPresenter {
   };
 
   #sortRoutePoints(sortType) {
-    switch (sortType) {
-      case SortType.DURATION_TIME:
-        this.#tripRoutePoints.sort(sortByDurationTime);
-        break;
-      case SortType.PRICE:
-        this.#tripRoutePoints.sort(sortByPrice);
-        break;
-      case SortType.DEFAULT:
-        this.#tripRoutePoints.sort(sortByDay);
-        break;
-      default:
-        this.#tripRoutePoints = [...this.#sourcedRoutePoints];
+    this.#tripRoutePoints = [...this.#sourcedRoutePoints];
+    if (sortType === SortType.DURATION_TIME) {
+      this.#tripRoutePoints.sort(sortByDurationTime);
+    }
+    if (sortType === SortType.PRICE) {
+      this.#tripRoutePoints.sort(sortByPrice);
+    }
+    if (sortType === SortType.DEFAULT) {
+      this.#tripRoutePoints.sort(sortByDay);
     }
 
     this.#currentSortType = sortType;

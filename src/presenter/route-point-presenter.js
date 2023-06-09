@@ -112,5 +112,4 @@ export default class RoutePointPresenter {
     this.#replaceFormToRoutePoint();
   };
 
-
 }
