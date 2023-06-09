@@ -1,3 +1,9 @@
+const SortType = {
+  DEFAULT: 'day',
+  DURATION_TIME: 'time',
+  PRICE: 'price',
+};
+
 const TYPES = ['taxi', 'flight', 'drive', 'check-in', 'sightseeing'];
 
 const CITY_NAMES = ['Amsterdam', 'Chamonix', 'Geneva', 'Rome', 'New York'];
@@ -30,5 +36,5 @@ const FilterType = {
   PAST: 'past',
 };
 
-export {TYPES, CITY_NAMES, DESCRIPTIONS, OFFERS, EMPTY_ROUTEPOINT, FilterType};
+export {TYPES, CITY_NAMES, DESCRIPTIONS, OFFERS, EMPTY_ROUTEPOINT, FilterType, SortType};
 
