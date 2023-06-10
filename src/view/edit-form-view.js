@@ -20,7 +20,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
   }
 
   function createCityListTemplate(cities) {
-    return cities.map((city) => `<option value=${city}></option>`).join('');
+    return cities.map((city) => `<option value='${city}'></option>`).join('');
   }
 
   function createPictureTemplate(pictures) {
@@ -53,7 +53,6 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
         <fieldset class="event__type-group">
           <legend class="visually-hidden">Event type</legend>
           ${createEventTypeTemplate(offersTypes)}
-
         </fieldset>
       </div>
     </div>
@@ -62,7 +61,15 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
       <label class="event__label  event__type-output" for="event-destination-1">
         ${capitalize(type)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1">
+      <input
+        class="event__input event__input--destination"
+        id="event-destination-1"
+        type="text"
+        name="event-destination"
+        value="${destination ? destination.name : ''}"
+        list="destination-list-1"
+        autocomplete="off"
+       >
       <datalist id="destination-list-1">
       ${createCityListTemplate(cityNames)}
       </datalist>
@@ -90,7 +97,6 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
   <section class="event__details">
     <section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
       <div class="event__available-offers">
       ${offers ? createOfferTemplate(offers) : ''}
       </div>
@@ -99,7 +105,6 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${destination ? destination.description : ''}</p>
-
       <div class="event__photos-container">
         <div class="event__photos-tape">
         ${destination ? createPictureTemplate(destination.pictures) : ''}
