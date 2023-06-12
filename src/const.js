@@ -1,14 +1,30 @@
-const SortType = {
+export const SortType = {
   DEFAULT: 'day',
   DURATION_TIME: 'time',
   PRICE: 'price',
 };
 
-const TYPES = ['taxi', 'flight', 'drive', 'check-in', 'sightseeing'];
+export const UserAction = {
+  UPDATE_ROUTEPOINT: 'UPDATE_ROUTEPOINT',
+  ADD_ROUTEPOINT: 'ADD_ROUTEPOINT',
+  DELETE_ROUTEPOINT: 'DELETE_ROUTEPOINT',
+};
 
-const CITY_NAMES = ['Amsterdam', 'Chamonix', 'Geneva', 'Rome', 'New York'];
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 
-const DESCRIPTIONS = [
+export const CITY_NAMES = [
+  'Amsterdam',
+  'Chamonix',
+  'Geneva',
+  'Rome',
+  'New York'
+];
+
+export const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
   'Aliquam erat volutpat',
   'Nunc fermentum tortor ac porta dapibus',
@@ -16,9 +32,17 @@ const DESCRIPTIONS = [
   'Cras aliquet varius magna, non porta ligula feugiat eget.'
 ];
 
-const OFFERS = ['Order Uber', 'Add luggage', 'Switch to comfort', 'Rent a car', 'Add breakfast', 'Book tickets', 'Lunch in city'];
+export const OFFERS = [
+  'Order Uber',
+  'Add luggage',
+  'Switch to comfort',
+  'Rent a car',
+  'Add breakfast',
+  'Book tickets',
+  'Lunch in city'
+];
 
-const EMPTY_ROUTEPOINT = {
+export const EMPTY_ROUTEPOINT = {
   id: '',
   basePrice: 0,
   dateFrom: null,
@@ -29,12 +53,9 @@ const EMPTY_ROUTEPOINT = {
   type: 'taxi',
 };
 
-const FilterType = {
+export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
 };
-
-export {TYPES, CITY_NAMES, DESCRIPTIONS, OFFERS, EMPTY_ROUTEPOINT, FilterType, SortType};
-
