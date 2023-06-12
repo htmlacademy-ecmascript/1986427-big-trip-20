@@ -1,9 +1,11 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { EMPTY_ROUTEPOINT } from '../const.js';
 import {humanizeDate} from '../utils/route-point-utils.js';
 import {capitalize} from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
 const DATE_FORMAT_IN_FORM = 'DD/MM/YY HH:mm';
 
 function createEditFormTemplate(routePoint, destination, offers, cityNames, offersTypes) {
@@ -21,7 +23,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
   }
 
   function createCityListTemplate(cities) {
-    return cities.map((city) => `<option value='${city}'></option>`).join('');
+    return cities.map((city) => `<option value="${city}"></option>`).join('');
   }
 
   function createPictureTemplate(pictures) {
@@ -62,15 +64,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
       <label class="event__label  event__type-output" for="event-destination-1">
         ${capitalize(type)}
       </label>
-      <input
-        class="event__input event__input--destination"
-        id="event-destination-1"
-        type="text"
-        name="event-destination"
-        value="${destination ? destination.name : ''}"
-        list="destination-list-1"
-        autocomplete="off"
-       >
+      <input class="event__input  event__input--destination" id="event-destination-1" autocomplete="off"  type="text" name="event-destination" value="${destination ? destination.name : ''}" list="destination-list-1"/>
       <datalist id="destination-list-1">
       ${createCityListTemplate(cityNames)}
       </datalist>
@@ -87,13 +81,16 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
         <span class="visually-hidden">Price</span>
-        € ${basePrice}
+        €
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(`${basePrice}`)}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-    <button class="event__reset-btn" type="reset">Cancel</button>
+    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
@@ -105,10 +102,12 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
 
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination ? destination.description : ''}</p>
+      <p class="event__destination-description">
+        ${destination ? he.encode(destination.description) : ''}
+      </p>
       <div class="event__photos-container">
         <div class="event__photos-tape">
-        ${destination ? createPictureTemplate(destination.pictures) : ''}
+            ${destination ? createPictureTemplate(destination.pictures) : ''}
         </div>
       </div>
     </section>
@@ -121,26 +120,27 @@ export default class EditFormView extends AbstractStatefulView {
   #destinationsModel = null;
   #offersModel = null;
   #handleSubmit = null;
+  #handleDeleteClick = null;
   #handleFavoriteClick = null;
   #datepicker = null;
 
-  constructor({destinationsModel, routePoint = EMPTY_ROUTEPOINT, offersModel, onFormSubmit}) {
+  constructor({destinationsModel, routePoint = EMPTY_ROUTEPOINT, offersModel, onFormSubmit, onDeleteClick}) {
     super();
     this.#destinationsModel = destinationsModel;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#offersModel = offersModel;
     this.#handleSubmit = onFormSubmit;
-
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this.#destinationsModel.getById(this._state), this.#offersModel.getByType(this._state), this.#destinationsModel.getCityNames(), this.#offersModel.getTypes());
-  }
-
-  reset(routePoint) {
-    this.updateElement(
-      EditFormView.parseRoutePointToState(routePoint),
+    return createEditFormTemplate(
+      this._state,
+      this.#destinationsModel.getById(this._state),
+      this.#offersModel.getByType(this._state),
+      this.#destinationsModel.getCityNames(),
+      this.#offersModel.getTypes()
     );
   }
 
@@ -153,44 +153,11 @@ export default class EditFormView extends AbstractStatefulView {
     }
   }
 
-  _restoreHandlers() {
-    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerSelectHandler);
-    this.#setDatepickers();
+  reset(routePoint) {
+    this.updateElement(
+      EditFormView.parseRoutePointToState(routePoint),
+    );
   }
-
-  #typeChangeHandler = (evt) => {
-    this.updateElement({
-      type: evt.target.value,
-      offers: this.#offersModel ? this.#offersModel.offers : '',
-    });
-  };
-
-  #destinationChangeHandler = (evt) => {
-    this.updateElement({
-      destination: this.#destinationsModel.getByName(evt.target.value) ? this.#destinationsModel.getByName(evt.target.value).id : '',
-    });
-  };
-
-  #offerSelectHandler = (evt) => {
-    const selectedOffer = evt.target.value;
-    if (evt.target.checked) {
-      this.updateElement({
-        offers: [...this._state.offers, selectedOffer],
-      });
-    } else {
-      this.updateElement({
-        offers: [...this._state.offers.filter((offer) => offer !== selectedOffer)],
-      });
-    }
-  };
-
-  #submitHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleSubmit(EditFormView.parseStateToRoutePoint(this._state), this.#destinationsModel.getById(this._state), this.#offersModel.getByType(this._state));
-  };
 
   #dateFromChangeHandler = ([userDate]) => {
     this.updateElement({
@@ -229,6 +196,60 @@ export default class EditFormView extends AbstractStatefulView {
         'time_24hr': true,
       },
     );
+  };
+
+  _restoreHandlers() {
+    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerSelectHandler);
+    this.element.querySelector('.event__field-group--price').addEventListener('change', this.#basePriceChangeHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formDeleteClickHandler);
+
+    this.#setDatepickers();
+  }
+
+  #typeChangeHandler = (evt) => {
+    this.updateElement({
+      type: evt.target.value,
+      offers: this.#offersModel ? this.#offersModel.offers : '',
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    this.updateElement({
+      destination: this.#destinationsModel.getByName(evt.target.value) ? this.#destinationsModel.getByName(evt.target.value).id : '',
+    });
+  };
+
+  #basePriceChangeHandler = (evt) => {
+    this.updateElement({
+      basePrice: evt.target.value,
+    });
+  };
+
+  #offerSelectHandler = (evt) => {
+    const selectedOffer = evt.target.value;
+    if (evt.target.checked) {
+      this.updateElement({
+        offers: [...this._state.offers, selectedOffer],
+      });
+    } else {
+      this.updateElement({
+        offers: [...this._state.offers.filter((offer) => offer !== selectedOffer)],
+      });
+    }
+  };
+
+  #submitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleSubmit(EditFormView.parseStateToRoutePoint(this._state), this.#destinationsModel.getById(this._state), this.#offersModel.getByType(this._state));
+  };
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditFormView.parseStateToRoutePoint(this._state));
   };
 
   static parseRoutePointToState(state) {
