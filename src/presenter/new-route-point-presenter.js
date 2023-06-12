@@ -16,8 +16,7 @@ export default class NewRoutePointPresenter {
     destinationsModel,
     offersModel,
     onDataChange,
-    onDestroy})
-  {
+    onDestroy}) {
     this.#routePointListContainer = routePointListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
