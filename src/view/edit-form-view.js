@@ -171,7 +171,7 @@ export default class EditFormView extends AbstractStatefulView {
     });
   };
 
-  #setDatepickers = () =>{
+  #setDatepickers = () => {
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {

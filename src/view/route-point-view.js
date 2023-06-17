@@ -42,7 +42,7 @@ function createRoutePointTemplate(routePoint, destination, offers) {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${createOfferTemplate(offers)}
+        ${offers ? createOfferTemplate(offers) : ''}
       </ul>
       <button class="event__favorite-btn event__favorite-btn--${getFavoriteButton()}" type="button">
         <span class="visually-hidden">Add to favorite</span>

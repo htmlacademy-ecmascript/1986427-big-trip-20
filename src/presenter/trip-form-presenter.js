@@ -3,6 +3,7 @@ import NoRoutePointView from '../view/no-route-point-view.js';
 import SortView from '../view/sort-view.js';
 import BigTripView from '../view/big-trip-view.js';
 import RoutePointPresenter from './route-point-presenter.js';
+import LoadingView from '../view/loading-view.js';
 import NewRoutePointPresenter from './new-route-point-presenter.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import { sortByDay, sortByDurationTime, sortByPrice } from '../utils/route-point-utils.js';
@@ -19,10 +20,12 @@ export default class TripFormPresenter {
   #routePointListComponent = new RoutePointListView();
   #sortComponent = null;
   #noRoutePointComponent = null;
+  #loadingComponent = new LoadingView();
   #routePointsPresenters = new Map();
   #newRoutePointPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor({
     bigTripContainer,
@@ -108,7 +111,16 @@ export default class TripFormPresenter {
       });
       this.#renderBigTrip();
     }
+    if (updateType === UpdateType.INIT) {
+      this.#isLoading = false;
+      remove(this.#loadingComponent);
+      this.#renderBigTrip();
+    }
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#bigTripComponent.element, RenderPosition.AFTERBEGIN);
+  }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -149,6 +161,8 @@ export default class TripFormPresenter {
     this.#routePointsPresenters.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
+
     if (this.#noRoutePointComponent) {
       remove(this.#noRoutePointComponent);
     }
@@ -177,6 +191,10 @@ export default class TripFormPresenter {
 
   #renderBigTrip(){
     render(this.#bigTripComponent, this.#bigTripContainer);
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.routePoints.length === 0) {
       this.#renderNoRoutePoints();
       return;
