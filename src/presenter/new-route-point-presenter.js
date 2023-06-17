@@ -1,5 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
+import {nanoid} from 'nanoid';
 import {UserAction, UpdateType} from '../const.js';
 import RoutePointsModel from '../model/route-points-model.js';
 
@@ -9,15 +10,10 @@ export default class NewRoutePointPresenter {
   #handleDestroy = null;
   #destinationsModel = null;
   #offersModel = null;
+
   #routePointEditComponent = null;
 
-  constructor({
-    routePointListContainer,
-    destinationsModel,
-    offersModel,
-    onDataChange,
-    onDestroy})
-  {
+  constructor({routePointListContainer, destinationsModel, offersModel, onDataChange, onDestroy}) {
     this.#routePointListContainer = routePointListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -56,15 +52,14 @@ export default class NewRoutePointPresenter {
   }
 
   #handleFormSubmit = (routePoint) => {
-    if(RoutePointsModel.isNotEmpty(routePoint)){
+    if(RoutePointsModel.isFilled(routePoint)){
       this.#handleDataChange(
         UserAction.ADD_ROUTEPOINT,
         UpdateType.MINOR,
-        {id: Math.floor(Math.random() * 100), ...routePoint},
+        {id: nanoid(), ...routePoint},
       );
+      this.destroy();
     }
-    this.destroy();
-
   };
 
   #handleDeleteClick = () => {

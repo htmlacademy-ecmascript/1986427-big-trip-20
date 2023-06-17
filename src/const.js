@@ -14,33 +14,8 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
-
-export const CITY_NAMES = [
-  'Amsterdam',
-  'Chamonix',
-  'Geneva',
-  'Rome',
-  'New York'
-];
-
-export const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-  'Aliquam erat volutpat',
-  'Nunc fermentum tortor ac porta dapibus',
-  'In rutrum ac purus sit amet tempus.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.'
-];
-
-export const OFFERS = [
-  'Order Uber',
-  'Add luggage',
-  'Switch to comfort',
-  'Rent a car',
-  'Add breakfast',
-  'Book tickets',
-  'Lunch in city'
-];
 
 export const EMPTY_ROUTEPOINT = {
   id: '',
