@@ -1,5 +1,6 @@
 import {UpdateType} from '../const.js';
 import Observable from '../framework/observable.js';
+
 export default class OffersModel extends Observable{
   #offers = [];
   #offersApiService = null;
@@ -15,13 +16,13 @@ export default class OffersModel extends Observable{
   }
 
   getByType(routePoint) {
-    if(this.#offers.length !== 0){
+    if (this.#offers.length){
       return this.#offers.find((offer) => offer.type === routePoint.type).offers;
     }
   }
 
   getById(routePoint){
-    if(this.#offers.length){
+    if (this.#offers.length) {
       return this.getByType(routePoint).filter((offer) => routePoint.offers.includes(offer.id));
     }
   }
@@ -32,8 +33,7 @@ export default class OffersModel extends Observable{
 
   async init() {
     try {
-      const offers = await this.#offersApiService.offers;
-      this.#offers = offers;
+      this.#offers = await this.#offersApiService.offers;
     } catch(err) {
       this.#offers = [];
     } finally{

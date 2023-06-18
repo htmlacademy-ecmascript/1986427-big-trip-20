@@ -9,7 +9,11 @@ import {render, RenderPosition, remove} from '../framework/render.js';
 import { sortByDay, sortByDurationTime, sortByPrice } from '../utils/route-point-utils.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import {filter} from '../utils/filter-utils.js';
-
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 export default class TripFormPresenter {
   #bigTripComponent = new BigTripView();
   #bigTripContainer = null;
@@ -26,7 +30,10 @@ export default class TripFormPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
-
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
   constructor({
     bigTripContainer,
     routePointsModel,
@@ -76,7 +83,10 @@ export default class TripFormPresenter {
 
   createRoutePoint() {
     this.#currentSortType = SortType.DEFAULT;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#filterModel.setFilter(
+      UpdateType.MAJOR,
+      FilterType.EVERYTHING
+    );
     this.#newRoutePointPresenter.init();
   }
 
@@ -85,16 +95,32 @@ export default class TripFormPresenter {
     this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     if (actionType === UserAction.UPDATE_ROUTEPOINT) {
-      this.#routePointsModel.updateRoutePoint(updateType, update);
+      this.#routePointsPresenters.get(update.id).setSaving();
+      try {
+        await this.#routePointsModel.updateRoutePoint(updateType, update);
+      } catch(err) {
+        this.#routePointsPresenters.get(update.id).setAborting();
+      }
     }
     if (actionType === UserAction.ADD_ROUTEPOINT) {
-      this.#routePointsModel.addRoutePoint(updateType, update);
+      this.#newRoutePointPresenter.setSaving();
+      try {
+        await this.#routePointsModel.addRoutePoint(updateType, update);
+      } catch (err) {
+        this.#newRoutePointPresenter.setAborting();
+      }
     }
     if (actionType === UserAction.DELETE_ROUTEPOINT) {
-      this.#routePointsModel.deleteRoutePoint(updateType, update);
+      this.#routePointsPresenters.get(update.id).setDeleting();
+      try {
+        await this.#routePointsModel.deleteRoutePoint(updateType, update);
+      } catch(err) {
+        this.#routePointsPresenters.get(update.id).setAborting();
+      }
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -119,7 +145,11 @@ export default class TripFormPresenter {
   };
 
   #renderLoading() {
-    render(this.#loadingComponent, this.#bigTripComponent.element, RenderPosition.AFTERBEGIN);
+    render(
+      this.#loadingComponent,
+      this.#bigTripComponent.element,
+      RenderPosition.AFTERBEGIN
+    );
   }
 
   #handleSortTypeChange = (sortType) => {

@@ -7,7 +7,7 @@ const Method = {
 
 export default class DestinationsApiService extends ApiService {
   get destinations() {
-    return this._load({url: 'big-trip/destinations'})
+    return this._load({url: 'destinations'})
       .then(ApiService.parseResponse);
   }
 
@@ -19,8 +19,6 @@ export default class DestinationsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   }
 }
