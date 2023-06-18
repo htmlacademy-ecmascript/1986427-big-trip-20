@@ -242,11 +242,48 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   _restoreHandlers() {
-    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerSelectHandler);
-    this.element.querySelector('.event__field-group--price').addEventListener('change', this.#basePriceChangeHandler);
+
+    this.element.querySelector('form').addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      this.#handleSubmit(
+        EditFormView.parseState(this._state),
+        this.#destinationsModel.getById(this._state),
+        this.#offersModel.getByType(this._state)
+      );
+    });
+
+    this.element.querySelector('.event__type-group').addEventListener('change', (evt) => {
+      this.updateElement({
+        type: evt.target.value
+      });
+    });
+
+    this.element.querySelector('.event__input--destination').addEventListener('change', (evt) => {
+      this.updateElement({
+        destination: this.#destinationsModel.getByName(evt.target.value)
+          ? this.#destinationsModel.getByName(evt.target.value).id
+          : '',
+      });
+    });
+
+    this.element.querySelector('.event__available-offers').addEventListener('change', (evt) => {
+      const selectedOffer = evt.target.value;
+      if (evt.target.checked) {
+        this.updateElement({
+          offers: [...this._state.offers, selectedOffer],
+        });
+      } else {
+        this.updateElement({
+          offers: [...this._state.offers.filter((offer) => offer !== selectedOffer)],
+        });
+      }
+    });
+
+    this.element.querySelector('.event__field-group--price').addEventListener('change', (evt) => {
+      this.updateElement({
+        basePrice: +evt.target.value,
+      });
+    });
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formDeleteClickHandler);
 
@@ -276,51 +313,9 @@ export default class EditFormView extends AbstractStatefulView {
     );
   }
 
-  #typeChangeHandler = (evt) => {
-    this.updateElement({
-      type: evt.target.value
-    });
-  };
-
-  #destinationChangeHandler = (evt) => {
-    this.updateElement({
-      destination: this.#destinationsModel.getByName(evt.target.value)
-        ? this.#destinationsModel.getByName(evt.target.value).id
-        : '',
-    });
-  };
-
-  #basePriceChangeHandler = (evt) => {
-    this.updateElement({
-      basePrice: +evt.target.value,
-    });
-  };
-
-  #offerSelectHandler = (evt) => {
-    const selectedOffer = evt.target.value;
-    if (evt.target.checked) {
-      this.updateElement({
-        offers: [...this._state.offers, selectedOffer],
-      });
-    } else {
-      this.updateElement({
-        offers: [...this._state.offers.filter((offer) => offer !== selectedOffer)],
-      });
-    }
-  };
-
-  #submitHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleSubmit(
-      EditFormView.parseStateToRoutePoint(this._state),
-      this.#destinationsModel.getById(this._state),
-      this.#offersModel.getByType(this._state)
-    );
-  };
-
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(EditFormView.parseStateToRoutePoint(this._state));
+    this.#handleDeleteClick(EditFormView.parseState(this._state));
   };
 
   static parseRoutePointToState(routePoint) {
@@ -332,7 +327,7 @@ export default class EditFormView extends AbstractStatefulView {
     };
   }
 
-  static parseStateToRoutePoint(state) {
+  static parseState(state) {
     const routePoint = {...state};
 
     delete routePoint.isDisabled;

@@ -80,20 +80,18 @@ export default class SortView extends AbstractView{
     this.#currentSortType = currentSortType;
     this.#handleSortTypeChange = onSortTypeChange;
 
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('click', (evt) => {
+      if (evt.target.tagName !== 'INPUT') {
+        return;
+      }
+
+      evt.preventDefault();
+      this.#handleSortTypeChange(evt.target.dataset.sortType);
+    });
   }
 
   get template() {
     return createSortTemplate(this.#currentSortType);
   }
-
-  #sortTypeChangeHandler = (evt) => {
-    if (!evt.target.classList.contains('event__offer-checkbox')) {
-      return;
-    }
-
-    evt.preventDefault();
-    this.#handleSortTypeChange(evt.target.dataset.sortType);
-  };
 
 }

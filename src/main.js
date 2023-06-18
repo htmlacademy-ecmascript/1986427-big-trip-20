@@ -37,7 +37,7 @@ const offersModel = new OffersModel({
   )
 });
 const formPresenter = new TripFormPresenter({
-  bigTripContainer: bigTripContainer,
+  bigTripContainer,
   routePointsModel,
   destinationsModel,
   offersModel,
