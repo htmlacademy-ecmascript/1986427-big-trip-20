@@ -10,15 +10,14 @@ export default class NewRoutePointButtonView extends AbstractView {
   constructor({onClick}) {
     super();
     this.#handleClick = onClick;
-    this.element.addEventListener('click', this.#clickHandler);
+    this.element.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      this.#handleClick();
+    });
   }
 
   get template() {
     return createNewRoutePointButtonTemplate();
   }
 
-  #clickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleClick();
-  };
 }

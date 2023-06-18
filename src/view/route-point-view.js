@@ -1,14 +1,14 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeDate, getTimeDiff, DATE_FORMAT, EVENT_DATE, TIME_FORMAT} from '../utils/route-point-utils.js';
+import {normalizeDate, getTimeDiff, DATE_FORMAT, EVENT_DATE, TIME_FORMAT} from '../utils/route-point-utils.js';
 import he from 'he';
 
 function createRoutePointTemplate(routePoint, destination, offers) {
   const {dateFrom, dateTo, type, basePrice, isFavorite} = routePoint;
 
-  const dateFormat = humanizeDate(dateFrom, DATE_FORMAT);
-  const eventDate = humanizeDate(dateFrom, EVENT_DATE);
-  const startTime = humanizeDate(dateFrom, TIME_FORMAT);
-  const endTime = humanizeDate(dateTo, TIME_FORMAT);
+  const dateFormat = normalizeDate(dateFrom, DATE_FORMAT);
+  const eventDate = normalizeDate(dateFrom, EVENT_DATE);
+  const startTime = normalizeDate(dateFrom, TIME_FORMAT);
+  const endTime = normalizeDate(dateTo, TIME_FORMAT);
   const durationTime = getTimeDiff(dateFrom, dateTo);
 
   function createOfferTemplate(offersList) {
@@ -64,29 +64,33 @@ export default class RoutePointView extends AbstractView {
   #handleClick = null;
   #handleFavoriteClick = null;
 
-  constructor({routePoint, destination, offers, onClick, onFavoriteClick}){
+  constructor({
+    routePoint,
+    destination,
+    offers,
+    onClick,
+    onFavoriteClick
+  }) {
     super();
     this.#routePoint = routePoint;
     this.#destination = destination;
     this.#offers = offers;
     this.#handleClick = onClick;
     this.#handleFavoriteClick = onFavoriteClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      this.#handleClick();
+    });
+
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      this.#handleFavoriteClick();
+    });
   }
 
   get template() {
     return createRoutePointTemplate(this.#routePoint, this.#destination, this.#offers);
   }
-
-  #clickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleClick();
-  };
-
-  #favoriteClickHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleFavoriteClick();
-  };
 
 }

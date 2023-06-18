@@ -76,7 +76,8 @@ export default class RoutePointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editFormComponent, prevEditFormComponent);
+      replace(this.#routePointComponent, prevEditFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevRoutePointComponent);
@@ -140,8 +141,11 @@ export default class RoutePointPresenter {
       this.#handleDataChange(
         UserAction.UPDATE_ROUTEPOINT,
         UpdateType.MINOR,
-        update, destination, offers, offersByType);
-      this.#replaceFormToRoutePoint();
+        update,
+        destination,
+        offers,
+        offersByType
+      );
     }
   };
 
@@ -153,5 +157,38 @@ export default class RoutePointPresenter {
     );
   };
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
 
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#routePointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editFormComponent.shake(resetFormState);
+  }
 }

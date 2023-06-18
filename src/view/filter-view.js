@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {capitalize} from '../utils/common.js';
+import {capitalizeName} from '../utils/common.js';
 
 function createFilterItemTemplate(filter, currentFilterType) {
   const {type, count} = filter;
@@ -15,7 +15,7 @@ function createFilterItemTemplate(filter, currentFilterType) {
         ${type === currentFilterType ? 'checked' : ''}
         ${!count ? 'disabled' : ''} value="${type}"
       >
-      <label class="trip-filters__filter-label" for="filter-${type}">${capitalize(type)}</label>
+      <label class="trip-filters__filter-label" for="filter-${type}">${capitalizeName(type)}</label>
     </div> `;
 }
 
