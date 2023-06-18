@@ -55,6 +55,7 @@ export default class NewRoutePointPresenter {
 
     this.#routePointEditComponent.shake(resetFormState);
   }
+
   destroy() {
     if (this.#routePointEditComponent === null) {
       return;
