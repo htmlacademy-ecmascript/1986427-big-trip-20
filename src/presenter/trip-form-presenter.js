@@ -8,7 +8,7 @@ import NewRoutePointPresenter from './new-route-point-presenter.js';
 import {render, RenderPosition, remove} from '../framework/render.js';
 import { sortByDay, sortByDurationTime, sortByPrice } from '../utils/route-point-utils.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
-import {filter} from '../utils/filter-utils.js';
+import {filter} from '../utils/common.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -34,6 +34,7 @@ export default class TripFormPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
+
   constructor({
     bigTripContainer,
     routePointsModel,

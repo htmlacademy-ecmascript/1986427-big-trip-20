@@ -1,8 +1,8 @@
 import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { EMPTY_ROUTEPOINT } from '../const.js';
-import {humanizeDate} from '../utils/route-point-utils.js';
-import {capitalize} from '../utils/common.js';
+import { EMPTY_ROUTE_POINT } from '../const.js';
+import {normalizeDate} from '../utils/route-point-utils.js';
+import {capitalizeName} from '../utils/common.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -11,8 +11,8 @@ const DATE_FORMAT_IN_FORM = 'DD/MM/YY HH:mm';
 function createEditFormTemplate(routePoint, destination, offers, cityNames, offersTypes) {
   const {dateFrom, dateTo, type, basePrice, isDisabled, isSaving, isDeleting} = routePoint;
 
-  const startTimeInForm = humanizeDate(dateFrom, DATE_FORMAT_IN_FORM);
-  const endTimeInForm = humanizeDate(dateTo, DATE_FORMAT_IN_FORM);
+  const startTimeInForm = normalizeDate(dateFrom, DATE_FORMAT_IN_FORM);
+  const endTimeInForm = normalizeDate(dateTo, DATE_FORMAT_IN_FORM);
 
   function createEventTypeTemplate(types) {
     return types.map((typeItem) =>
@@ -28,7 +28,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
           class="event__type-label  event__type-label--${typeItem.toLowerCase()}"
           for="event-type-${typeItem.toLowerCase()}-1"
        >
-          ${capitalize(typeItem)}
+          ${capitalizeName(typeItem)}
       </label>
       </div>`).join('');
   }
@@ -84,7 +84,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${capitalize(type)}
+            ${capitalizeName(type)}
           </label>
           <input
             class="event__input  event__input--destination"
@@ -194,10 +194,10 @@ export default class EditFormView extends AbstractStatefulView {
   #handleFavoriteClick = null;
   #datepicker = null;
 
-  constructor({destinationsModel, routePoint = EMPTY_ROUTEPOINT, offersModel, onFormSubmit, onDeleteClick}) {
+  constructor({destinationsModel, routePoint = EMPTY_ROUTE_POINT, offersModel, onFormSubmit, onDeleteClick}) {
     super();
-    this.#destinationsModel = destinationsModel;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
+    this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#handleSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
@@ -241,7 +241,15 @@ export default class EditFormView extends AbstractStatefulView {
     });
   };
 
-  #setDatepickers = () => {
+  _restoreHandlers() {
+    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerSelectHandler);
+    this.element.querySelector('.event__field-group--price').addEventListener('change', this.#basePriceChangeHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formDeleteClickHandler);
+
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
@@ -266,18 +274,6 @@ export default class EditFormView extends AbstractStatefulView {
         'time_24hr': true,
       },
     );
-  };
-
-  _restoreHandlers() {
-    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerSelectHandler);
-    this.element.querySelector('.event__field-group--price').addEventListener('change', this.#basePriceChangeHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formDeleteClickHandler);
-
-    this.#setDatepickers();
   }
 
   #typeChangeHandler = (evt) => {

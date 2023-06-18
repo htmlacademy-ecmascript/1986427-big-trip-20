@@ -14,8 +14,10 @@ export const TIME_FORMAT = 'HH:mm';
 export const MSEC_IN_HOUR = MSEC_IN_SEC * SEC_IN_MIN * MIN_IN_HOUR;
 export const MSEC_IN_DAY = MSEC_IN_HOUR * HOUR_IN_DAY;
 
-export function humanizeDate(date, dateFormat) {
-  return date ? dayjs(date).format(dateFormat) : '';
+export function normalizeDate(date, dateFormat) {
+  return date
+    ? dayjs(date).format(dateFormat)
+    : '';
 }
 
 export function getTimeDiff(timeFrom, timeTo) {
@@ -23,21 +25,25 @@ export function getTimeDiff(timeFrom, timeTo) {
 
   let routePointDuration = 0;
 
-  switch (true) {
-    case (timeDiff >= MSEC_IN_DAY):
-      routePointDuration = dayjs.duration(timeDiff).format('DD[D] HH[H] mm[M]');
-      break;
-    case (timeDiff >= MSEC_IN_HOUR):
-      routePointDuration = dayjs.duration(timeDiff).format('HH[H] mm[M]');
-      break;
-    case (timeDiff < MSEC_IN_HOUR):
-      routePointDuration = dayjs.duration(timeDiff).format('mm[M]');
-      break;
+  if (timeDiff >= MSEC_IN_DAY) {
+    routePointDuration = dayjs.duration(timeDiff).format('DD[D] HH[H] mm[M]');
+  }
+
+  if (timeDiff >= MSEC_IN_HOUR) {
+    routePointDuration = dayjs.duration(timeDiff).format('HH[H] mm[M]');
+  }
+
+  if (timeDiff < MSEC_IN_HOUR) {
+    routePointDuration = dayjs.duration(timeDiff).format('mm[M]');
   }
 
   return routePointDuration;
 }
-export const getDatesDiff = (dateFrom, dateTo, timeUnit) => timeUnit ? dayjs(dateTo).diff(dayjs(dateFrom), timeUnit) : dayjs(dateTo).diff(dayjs(dateFrom));
+
+export const getDatesDiff = (dateFrom, dateTo, timeUnit) => timeUnit
+  ? dayjs(dateTo).diff(dayjs(dateFrom), timeUnit)
+  : dayjs(dateTo).diff(dayjs(dateFrom));
+
 
 export function isRoutePointFuture(routePoint){
   return (dayjs().isBefore(routePoint.dateFrom));

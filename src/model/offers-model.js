@@ -8,7 +8,6 @@ export default class OffersModel extends Observable{
   constructor({offersApiService}) {
     super();
     this.#offersApiService = offersApiService;
-
   }
 
   get offers() {

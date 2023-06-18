@@ -88,7 +88,7 @@ export default class SortView extends AbstractView{
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'INPUT') {
+    if (!evt.target.classList.contains('event__offer-checkbox')) {
       return;
     }
 

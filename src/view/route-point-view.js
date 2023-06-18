@@ -1,14 +1,14 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeDate, getTimeDiff, DATE_FORMAT, EVENT_DATE, TIME_FORMAT} from '../utils/route-point-utils.js';
+import {normalizeDate, getTimeDiff, DATE_FORMAT, EVENT_DATE, TIME_FORMAT} from '../utils/route-point-utils.js';
 import he from 'he';
 
 function createRoutePointTemplate(routePoint, destination, offers) {
   const {dateFrom, dateTo, type, basePrice, isFavorite} = routePoint;
 
-  const dateFormat = humanizeDate(dateFrom, DATE_FORMAT);
-  const eventDate = humanizeDate(dateFrom, EVENT_DATE);
-  const startTime = humanizeDate(dateFrom, TIME_FORMAT);
-  const endTime = humanizeDate(dateTo, TIME_FORMAT);
+  const dateFormat = normalizeDate(dateFrom, DATE_FORMAT);
+  const eventDate = normalizeDate(dateFrom, EVENT_DATE);
+  const startTime = normalizeDate(dateFrom, TIME_FORMAT);
+  const endTime = normalizeDate(dateTo, TIME_FORMAT);
   const durationTime = getTimeDiff(dateFrom, dateTo);
 
   function createOfferTemplate(offersList) {
