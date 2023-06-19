@@ -49,7 +49,10 @@ export default class RoutePointsModel extends Observable{
     try {
       const response = await this.#routePointsApiService.addRoutePoint(update);
       const newRoutePoint = this.#adaptToClient(response);
-      this.#routePoints = [newRoutePoint, ...this.#routePoints];
+      this.#routePoints = [
+        newRoutePoint,
+        ...this.#routePoints
+      ];
       this._notify(updateType, newRoutePoint);
     } catch(err) {
       throw new Error('Can\'t add route point');
@@ -81,12 +84,14 @@ export default class RoutePointsModel extends Observable{
   }
 
   #adaptToClient(routePoint) {
+    const dateFrom = routePoint['date_from'] !== null ? new Date(routePoint['date_from']) : routePoint['date_from'];
+    const dateTo = routePoint['date_to'] !== null ? new Date(routePoint['date_to']) : routePoint['date_to'];
     const adaptedRoutePoint = {
       ...routePoint,
       isFavorite: routePoint['is_favorite'],
       basePrice: routePoint['base_price'],
-      dateFrom: routePoint['date_from'] !== null ? new Date(routePoint['date_from']) : routePoint['date_from'],
-      dateTo: routePoint['date_to'] !== null ? new Date(routePoint['date_to']) : routePoint['date_to'],
+      dateFrom,
+      dateTo,
     };
 
     delete adaptedRoutePoint['base_price'];
@@ -97,7 +102,7 @@ export default class RoutePointsModel extends Observable{
     return adaptedRoutePoint;
   }
 
-  static isFilled(routePoint){
+  static isFilled(routePoint) {
     return routePoint.basePrice
       && routePoint.dateFrom
       && routePoint.dateTo

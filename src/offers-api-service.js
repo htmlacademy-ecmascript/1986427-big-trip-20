@@ -8,8 +8,8 @@ export default class OffersApiService extends ApiService {
 
   async updateOffer(offer) {
     const response = await this._load({
-      url: `${OFFERS_END_POINT}/${offer.id}`,
       headers: new Headers({'Content-Type': 'application/json'}),
+      url: `${OFFERS_END_POINT}/${offer.id}`,
       method: Method.PUT,
       body: JSON.stringify(offer),
     });

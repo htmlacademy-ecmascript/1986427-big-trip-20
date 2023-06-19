@@ -12,7 +12,13 @@ export default class NewRoutePointPresenter {
 
   #routePointEditComponent = null;
 
-  constructor({routePointListContainer, destinationsModel, offersModel, onDataChange, onDestroy}) {
+  constructor({
+    routePointListContainer,
+    destinationsModel,
+    offersModel,
+    onDataChange,
+    onDestroy
+  }) {
     this.#routePointListContainer = routePointListContainer;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
@@ -29,7 +35,10 @@ export default class NewRoutePointPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick
+      onFormCancel: () => {
+        this.destroy();
+      },
+      isNewRoutePoint : true,
     });
 
     render(this.#routePointEditComponent, this.#routePointListContainer, RenderPosition.AFTERBEGIN);
@@ -79,12 +88,8 @@ export default class NewRoutePointPresenter {
     }
   };
 
-  #handleDeleteClick = () => {
-    this.destroy();
-  };
-
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === 'Esc' || evt.key === 'Escape') {
       evt.preventDefault();
       this.destroy();
     }

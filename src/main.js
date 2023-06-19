@@ -11,29 +11,28 @@ import OffersModel from './model/offers-model.js';
 import RoutePointsModel from './model/route-points-model.js';
 import DestinationsModel from './model/destinations-model.js';
 import FilterModel from './model/filter-model.js';
-import {BASE_END_POINT, BEARER_AUTORIZATION_TOKEN} from './const';
+import {BASE_END_POINT, BEARER_AUTHORIZATION_TOKEN} from './const';
 
 const tripInfoContainer = document.querySelector('.trip-main');
-const filterContainer = document.querySelector('.trip-controls__filters');
 const bigTripContainer = document.querySelector('.trip-events');
 
 const routePointsModel = new RoutePointsModel({
   routePointsApiService: new RoutePointsApiService(
     BASE_END_POINT,
-    BEARER_AUTORIZATION_TOKEN
+    BEARER_AUTHORIZATION_TOKEN
   )
 });
 const filterModel = new FilterModel();
 const destinationsModel = new DestinationsModel({
   destinationsApiService: new DestinationsApiService(
     BASE_END_POINT,
-    BEARER_AUTORIZATION_TOKEN
+    BEARER_AUTHORIZATION_TOKEN
   )
 });
 const offersModel = new OffersModel({
   offersApiService: new OffersApiService(
     BASE_END_POINT,
-    BEARER_AUTORIZATION_TOKEN
+    BEARER_AUTHORIZATION_TOKEN
   )
 });
 const formPresenter = new TripFormPresenter({
@@ -53,7 +52,7 @@ const newRoutePointButtonComponent = new NewRoutePointButtonView({
 });
 
 const filterPresenter = new FilterPresenter({
-  filterContainer: filterContainer,
+  filterContainer: document.querySelector('.trip-controls__filters'),
   filterModel,
   routePointsModel
 });
