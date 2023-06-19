@@ -5,6 +5,8 @@ export const DESTINATIONS_END_POINT = 'destinations';
 export const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 export const SortType = {
   DEFAULT: 'day',
@@ -16,12 +18,14 @@ export const UserAction = {
   ADD_ROUTEPOINT: 'ADD_ROUTEPOINT',
   DELETE_ROUTEPOINT: 'DELETE_ROUTEPOINT',
 };
+
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
 };
+
 export const EMPTY_ROUTE_POINT = {
   id: '',
   type: 'taxi',
@@ -32,22 +36,26 @@ export const EMPTY_ROUTE_POINT = {
   dateTo: null,
   destination: null,
 };
+
 export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
   PAST: 'past',
 };
+
 export const NoRoutepointsTextType = {
   [FilterType.EVERYTHING]: 'Click "New Event" to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.PAST]: 'There are no past events now',
 };
+
 export const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
+
 export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',

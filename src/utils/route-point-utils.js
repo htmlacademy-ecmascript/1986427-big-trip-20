@@ -23,21 +23,21 @@ export function normalizeDate(date, dateFormat) {
 export function getTimeDiff(timeFrom, timeTo) {
   const timeDiff = dayjs(timeTo).diff(timeFrom);
 
-  let routePointDuration = 0;
+  let routeDuration = 0;
 
   if (timeDiff >= MSEC_IN_DAY) {
-    routePointDuration = dayjs.duration(timeDiff).format('DD[D] HH[H] mm[M]');
+    routeDuration = dayjs.duration(timeDiff).format('DD[D] HH[H] mm[M]');
   }
 
   if (timeDiff >= MSEC_IN_HOUR) {
-    routePointDuration = dayjs.duration(timeDiff).format('HH[H] mm[M]');
+    routeDuration = dayjs.duration(timeDiff).format('HH[H] mm[M]');
   }
 
   if (timeDiff < MSEC_IN_HOUR) {
-    routePointDuration = dayjs.duration(timeDiff).format('mm[M]');
+    routeDuration = dayjs.duration(timeDiff).format('mm[M]');
   }
 
-  return routePointDuration;
+  return routeDuration;
 }
 
 export const getDatesDiff = (dateFrom, dateTo, timeUnit) => timeUnit

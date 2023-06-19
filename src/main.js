@@ -41,7 +41,7 @@ const formPresenter = new TripFormPresenter({
   destinationsModel,
   offersModel,
   filterModel,
-  onNewRoutePointDestroy: handleNewRoutePointFormClose
+  onNewRoutePointDestroy: newRoutePointFormCloseHandler
 });
 
 const newRoutePointButtonComponent = new NewRoutePointButtonView({
@@ -57,8 +57,7 @@ const filterPresenter = new FilterPresenter({
   routePointsModel
 });
 
-
-function handleNewRoutePointFormClose() {
+function newRoutePointFormCloseHandler() {
   newRoutePointButtonComponent.element.disabled = false;
 }
 
@@ -77,11 +76,12 @@ render(
   bigTripContainer
 );
 formPresenter.init();
-routePointsModel.init().finally(() => {
-  render(
-    newRoutePointButtonComponent,
-    tripInfoContainer
-  );
-});
+routePointsModel.init()
+  .finally(() => {
+    render(
+      newRoutePointButtonComponent,
+      tripInfoContainer
+    );
+  });
 destinationsModel.init();
 offersModel.init();

@@ -261,7 +261,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', (evt) => {
       evt.preventDefault();
       this.#handleSubmit(
-        EditFormView.parseState(this._state),
+        EditFormView.normalizeState(this._state),
         this.#destinationsModel.getById(this._state),
         this.#offersModel.getByType(this._state)
       );
@@ -335,7 +335,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(EditFormView.parseState(this._state));
+    this.#handleDeleteClick(EditFormView.normalizeState(this._state));
   };
 
   static parseRoutePointToState(routePoint) {
@@ -347,13 +347,12 @@ export default class EditFormView extends AbstractStatefulView {
     };
   }
 
-  static parseState(state) {
+  static normalizeState(state) {
     const routePoint = {...state};
 
     delete routePoint.isDeleting;
     delete routePoint.isDisabled;
     delete routePoint.isSaving;
-
 
     return routePoint;
   }

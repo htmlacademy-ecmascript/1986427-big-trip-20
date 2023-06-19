@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createNewRoutePointButtonTemplate() {
+function createNewRoutePointTemplateButton() {
   return ('<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>');
 }
 
@@ -17,7 +17,7 @@ export default class NewRoutePointButtonView extends AbstractView {
   }
 
   get template() {
-    return createNewRoutePointButtonTemplate();
+    return createNewRoutePointTemplateButton();
   }
 
 }

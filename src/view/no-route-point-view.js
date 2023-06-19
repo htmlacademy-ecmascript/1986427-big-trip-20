@@ -2,8 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {NoRoutepointsTextType} from '../const.js';
 
 function createNoRoutePointTemplate(filterType) {
-  const noRoutePointTextValue = NoRoutepointsTextType[filterType];
-  return (`<p class="trip-events__msg">${noRoutePointTextValue}</p>`);
+  return (`<p class="trip-events__msg">${NoRoutepointsTextType[filterType]}</p>`);
 }
 
 export default class NoRoutePointView extends AbstractView {

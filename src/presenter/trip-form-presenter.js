@@ -52,7 +52,7 @@ export default class TripFormPresenter {
       routePointListContainer: this.#routePointListComponent.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
-      onDataChange: this.#handleViewAction,
+      onDataChange: this.#viewActionHandle,
       onDestroy: onNewRoutePointDestroy
     });
   }
@@ -93,7 +93,7 @@ export default class TripFormPresenter {
     this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = async (actionType, updateType, update) => {
+  #viewActionHandle = async (actionType, updateType, update) => {
     if (actionType === UserAction.UPDATE_ROUTEPOINT) {
       this.#routePointsPresenters.get(update.id).setSaving();
       try {
@@ -209,7 +209,7 @@ export default class TripFormPresenter {
       destinationsModel: this.#destinationsModel,
       routePointsModel: this.#routePointsModel,
       offersModel: this.#offersModel,
-      onDataChange: this.#handleViewAction,
+      onDataChange: this.#viewActionHandle,
       onModeChange: this.#handleModeChange
     });
     routePointPresenter.init(routePoint);
