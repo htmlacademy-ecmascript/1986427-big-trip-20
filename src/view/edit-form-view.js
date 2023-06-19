@@ -13,6 +13,8 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
 
   const startTimeInForm = normalizeDate(dateFrom, DATE_FORMAT_IN_FORM);
   const endTimeInForm = normalizeDate(dateTo, DATE_FORMAT_IN_FORM);
+  const deleteButton = isDeleting ? 'Deleting...' : 'Delete';
+  const isDisabledAttr = isDisabled ? 'disabled' : '';
 
   function createEventTypeTemplate(types) {
     return types.map((typeItem) =>
@@ -22,7 +24,8 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
           class="event__type-input  visually-hidden"
           type="radio"
           name="event-type"
-          value="${typeItem.toLowerCase()}" ${isDisabled ? 'disabled' : ''}
+          value="${typeItem.toLowerCase()}"
+          ${isDisabledAttr}
         >
        <label
           class="event__type-label  event__type-label--${typeItem.toLowerCase()}"
@@ -50,7 +53,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             type="checkbox" value="${offer.id}"
             name="event-offer-${type}"
             ${routePoint.offers.includes(offer.id) ? 'checked' : '' }
-            ${isDisabled ? 'disabled' : ''}
+            ${isDisabledAttr}
          >
          <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
            <span class="event__offer-title">${offer.title}</span>
@@ -94,7 +97,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             name="event-destination"
             value="${destination ? destination.name : ''}"
             list="destination-list-1"
-            ${isDisabled ? 'disabled' : ''}
+            ${isDisabledAttr}
           />
           <datalist id="destination-list-1">
             ${createCityListTemplate(cityNames)}
@@ -109,7 +112,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             type="text"
             name="event-start-time"
             value="${startTimeInForm}"
-            ${isDisabled ? 'disabled' : ''}
+            ${isDisabledAttr}
           >
           —
           <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -148,14 +151,15 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
         <button
           class="event__reset-btn"
           type="reset"
-          ${isDisabled ? 'disabled' : ''}
+          ${isDisabledAttr}
         >
-          ${isDeleting ? 'Deleting...' : 'Delete'}
+          ${!routePoint.id ? 'Cancel' : deleteButton}
         </button>
         <button
+          ${ routePoint.id ? '' : 'style="display: none"'}
           class="event__rollup-btn"
           type="button"
-          ${isDisabled ? 'disabled' : ''}
+          ${isDisabledAttr}
          >
           <span class="visually-hidden">Open event</span>
         </button>
@@ -191,16 +195,27 @@ export default class EditFormView extends AbstractStatefulView {
   #offersModel = null;
   #handleSubmit = null;
   #handleDeleteClick = null;
-  #handleFavoriteClick = null;
+  #handleFormCancel = null;
   #datepicker = null;
+  #isNewRoutePoint = false;
 
-  constructor({destinationsModel, routePoint = EMPTY_ROUTE_POINT, offersModel, onFormSubmit, onDeleteClick}) {
+  constructor({
+    destinationsModel,
+    routePoint = EMPTY_ROUTE_POINT,
+    offersModel,
+    onFormSubmit,
+    onFormCancel,
+    onDeleteClick,
+    isNewRoutePoint = false
+  }) {
     super();
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#handleSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
+    this.#handleFormCancel = onFormCancel;
+    this.#isNewRoutePoint = isNewRoutePoint;
     this._restoreHandlers();
   }
 
@@ -235,7 +250,7 @@ export default class EditFormView extends AbstractStatefulView {
     });
   };
 
-  #dateToChangeHandler = ([userDate]) => {
+  #dateToChangeUpdateHandler = ([userDate]) => {
     this.updateElement({
       dateTo: userDate,
     });
@@ -246,7 +261,7 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', (evt) => {
       evt.preventDefault();
       this.#handleSubmit(
-        EditFormView.parseState(this._state),
+        EditFormView.normalizeState(this._state),
         this.#destinationsModel.getById(this._state),
         this.#offersModel.getByType(this._state)
       );
@@ -284,8 +299,13 @@ export default class EditFormView extends AbstractStatefulView {
         basePrice: +evt.target.value,
       });
     });
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formDeleteClickHandler);
+
+    if (!this.#isNewRoutePoint) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCancelClickHandler);
+    } else {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formCancelClickHandler);
+    }
 
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
@@ -307,7 +327,7 @@ export default class EditFormView extends AbstractStatefulView {
         dateFormat: 'd/m/y H:i',
         minDate: this._state.dateFrom,
         defaultDate: this._state.dateTo,
-        onChange: this.#dateToChangeHandler,
+        onChange: this.#dateToChangeUpdateHandler,
         'time_24hr': true,
       },
     );
@@ -315,7 +335,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(EditFormView.parseState(this._state));
+    this.#handleDeleteClick(EditFormView.normalizeState(this._state));
   };
 
   static parseRoutePointToState(routePoint) {
@@ -327,13 +347,19 @@ export default class EditFormView extends AbstractStatefulView {
     };
   }
 
-  static parseState(state) {
+  static normalizeState(state) {
     const routePoint = {...state};
 
+    delete routePoint.isDeleting;
     delete routePoint.isDisabled;
     delete routePoint.isSaving;
-    delete routePoint.isDeleting;
 
     return routePoint;
   }
+
+  #formCancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormCancel();
+  };
+
 }

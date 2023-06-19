@@ -1,11 +1,5 @@
 import ApiService from './framework/api-service.js';
-
-const Method = {
-  GET: 'GET',
-  PUT: 'PUT',
-  POST: 'POST',
-  DELETE: 'DELETE',
-};
+import {Method} from './const';
 
 export default class RoutePointsApiService extends ApiService {
   get routePoints() {
@@ -24,16 +18,25 @@ export default class RoutePointsApiService extends ApiService {
     return await ApiService.parseResponse(response);
   }
 
+  async deleteRoutePoint(routePoint) {
+    return await this._load({
+      url: `points/${routePoint.id}`,
+      method: Method.DELETE,
+    });
+  }
+
   #adaptToServer(routePoint) {
+    const dateFrom = routePoint.dateFrom instanceof Date ? routePoint.dateFrom.toISOString() : null;
+    const dateTo = routePoint.dateTo instanceof Date ? routePoint.dateTo.toISOString() : null;
+
     const adaptedRoutePoint = {
       ...routePoint,
-      'base_price': routePoint.basePrice,
-      'date_from': routePoint.dateFrom instanceof Date ? routePoint.dateFrom.toISOString() : null,
-      'date_to': routePoint.dateTo instanceof Date ? routePoint.dateTo.toISOString() : null,
       'is_favorite': routePoint.isFavorite,
+      'base_price': routePoint.basePrice,
+      'date_from': dateFrom,
+      'date_to': dateTo,
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedRoutePoint.basePrice;
     delete adaptedRoutePoint.dateFrom;
     delete adaptedRoutePoint.dateTo;
@@ -51,12 +54,5 @@ export default class RoutePointsApiService extends ApiService {
     });
 
     return await ApiService.parseResponse(response);
-  }
-
-  async deleteRoutePoint(routePoint) {
-    return await this._load({
-      url: `points/${routePoint.id}`,
-      method: Method.DELETE,
-    });
   }
 }

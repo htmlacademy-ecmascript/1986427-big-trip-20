@@ -1,13 +1,9 @@
 import {render, replace, remove} from '../framework/render.js';
 import RoutePointView from '../view/route-point-view.js';
 import EditFormView from '../view/edit-form-view.js';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType, Mode} from '../const.js';
 import RoutePointsModel from '../model/route-points-model.js';
 
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
 
 export default class RoutePointPresenter {
   #routePointListContainer = null;
@@ -55,7 +51,9 @@ export default class RoutePointPresenter {
       routePoint: this.#routePoint,
       destination: this.#destination,
       offers: this.#offers,
-      onClick: this.#handleClick,
+      onClick: () => {
+        this.#replaceRoutePointToForm();
+      },
       onFavoriteClick: this.#handleFavoriteClick
     });
 
@@ -64,7 +62,12 @@ export default class RoutePointPresenter {
       routePoint: this.#routePoint,
       offersModel: this.#offersModel,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick});
+      onFormCancel:  () => {
+        this.#editFormComponent.reset(this.#routePoint);
+        this.#replaceFormToRoutePoint();
+      },
+      onDeleteClick: this.#handleDeleteClick
+    });
 
     if (prevRoutePointComponent === null || prevEditFormComponent === null) {
       render(this.#routePointComponent, this.#routePointListContainer);
@@ -116,10 +119,6 @@ export default class RoutePointPresenter {
       this.#replaceFormToRoutePoint();
       document.removeEventListener('keydown', this.#escKeyDownHandler);
     }
-  };
-
-  #handleClick = () => {
-    this.#replaceRoutePointToForm();
   };
 
   #handleFavoriteClick = () => {
