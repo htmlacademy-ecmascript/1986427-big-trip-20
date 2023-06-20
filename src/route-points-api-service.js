@@ -1,15 +1,15 @@
 import ApiService from './framework/api-service.js';
-import {Method} from './const';
+import {Method, POINTS_END_POINT} from './const';
 
 export default class RoutePointsApiService extends ApiService {
   get routePoints() {
-    return this._load({url: 'points'})
+    return this._load({url: POINTS_END_POINT})
       .then(ApiService.parseResponse);
   }
 
   async updateRoutePoint(routePoint) {
     const response = await this._load({
-      url: `points/${routePoint.id}`,
+      url: `${POINTS_END_POINT}/${routePoint.id}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(routePoint)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -20,7 +20,7 @@ export default class RoutePointsApiService extends ApiService {
 
   async deleteRoutePoint(routePoint) {
     return await this._load({
-      url: `points/${routePoint.id}`,
+      url: `${POINTS_END_POINT}/${routePoint.id}`,
       method: Method.DELETE,
     });
   }

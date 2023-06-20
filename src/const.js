@@ -2,6 +2,7 @@ export const BEARER_AUTHORIZATION_TOKEN = 'Basic w3wcFG7445lZXCHM';
 export const BASE_END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
 export const OFFERS_END_POINT = 'offers';
 export const DESTINATIONS_END_POINT = 'destinations';
+export const POINTS_END_POINT = 'points';
 export const Method = {
   GET: 'GET',
   PUT: 'PUT',
