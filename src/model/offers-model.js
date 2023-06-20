@@ -5,7 +5,9 @@ export default class OffersModel extends Observable{
   #offers = [];
   #offersApiService = null;
 
-  constructor({offersApiService}) {
+  constructor({
+    offersApiService
+  }) {
     super();
     this.#offersApiService = offersApiService;
   }

@@ -10,7 +10,11 @@ export default class FilterPresenter {
 
   #filterComponent = null;
 
-  constructor({filterContainer, filterModel, routePointsModel}) {
+  constructor({
+    filterContainer,
+    filterModel,
+    routePointsModel
+  }) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#routePointsModel = routePointsModel;

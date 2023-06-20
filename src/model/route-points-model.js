@@ -5,7 +5,9 @@ export default class RoutePointsModel extends Observable{
   #routePoints = [];
   #routePointsApiService = null;
 
-  constructor({routePointsApiService}) {
+  constructor({
+    routePointsApiService
+  }) {
     super();
     this.#routePointsApiService = routePointsApiService;
   }
