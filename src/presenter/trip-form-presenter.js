@@ -11,6 +11,7 @@ import {SortType, UpdateType, UserAction, FilterType, TimeLimit} from '../const.
 import {filter} from '../utils/common.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import NewRoutePointButtonView from '../view/new-route-point-button-view.js';
+import NotAvailableView from '../view/not-available-view.js';
 
 export default class TripFormPresenter {
   #bigTripComponent = new BigTripView();
@@ -29,6 +30,9 @@ export default class TripFormPresenter {
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #showErrorMessage = false;
+  #notAvailableComponent = new NotAvailableView();
+
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -158,9 +162,18 @@ export default class TripFormPresenter {
     if (updateType === UpdateType.ERROR) {
       this.#isLoading = false;
       remove(this.#loadingComponent);
-      this.#renderBigTrip();
+      this.#renderServerNotAvailableMessage();
     }
   };
+
+  #renderServerNotAvailableMessage() {
+    this.#showErrorMessage = true;
+    render(
+      this.#notAvailableComponent,
+      this.#bigTripComponent.element,
+      RenderPosition.AFTERBEGIN
+    );
+  }
 
   #renderLoading() {
     render(
@@ -195,11 +208,13 @@ export default class TripFormPresenter {
     this.#noRoutePointComponent = new NoRoutePointView({
       filterType: this.#filterType
     });
-    render(
-      this.#noRoutePointComponent,
-      this.#bigTripComponent.element,
-      RenderPosition.AFTERBEGIN
-    );
+    if (!this.#showErrorMessage) {
+      render(
+        this.#noRoutePointComponent,
+        this.#bigTripComponent.element,
+        RenderPosition.AFTERBEGIN
+      );
+    }
   }
 
   #clearTripForm({resetSortType = false} = {}) {
@@ -214,6 +229,11 @@ export default class TripFormPresenter {
     if (this.#noRoutePointComponent) {
       remove(this.#noRoutePointComponent);
     }
+
+    if (this.#notAvailableComponent) {
+      remove(this.#notAvailableComponent);
+    }
+
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
     }
