@@ -154,6 +154,12 @@ export default class TripFormPresenter {
       remove(this.#loadingComponent);
       this.#renderBigTrip();
     }
+
+    if (updateType === UpdateType.ERROR) {
+      this.#isLoading = false;
+      remove(this.#loadingComponent);
+      this.#renderBigTrip();
+    }
   };
 
   #renderLoading() {
