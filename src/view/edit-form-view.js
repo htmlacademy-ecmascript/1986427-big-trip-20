@@ -25,7 +25,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
           type="radio"
           name="event-type"
           value="${typeItem.toLowerCase()}"
-          ${isDisabledAttr}
+          ${typeItem === type ? 'checked' : ''}
         >
        <label
           class="event__type-label  event__type-label--${typeItem.toLowerCase()}"
@@ -97,6 +97,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             name="event-destination"
             value="${destination ? destination.name : ''}"
             list="destination-list-1"
+            required
             ${isDisabledAttr}
           />
           <datalist id="destination-list-1">
@@ -113,6 +114,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             name="event-start-time"
             value="${startTimeInForm}"
             ${isDisabledAttr}
+            required
           >
           —
           <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -122,6 +124,7 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
             type="text"
             name="event-end-time"
             value="${endTimeInForm}"
+            required
             ${isDisabled ? 'disabled' : ''}
           >
         </div>
@@ -134,8 +137,10 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
           <input
             class="event__input  event__input--price"
             id="event-price-1"
-            type="text"
             name="event-price"
+            type="number"
+            min="1"
+            required
             value="${he.encode(`${basePrice}`)}"
             ${isDisabled ? 'disabled' : ''}
           >
