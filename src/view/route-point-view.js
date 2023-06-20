@@ -2,7 +2,11 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {normalizeDate, getTimeDiff, DATE_FORMAT, EVENT_DATE, TIME_FORMAT} from '../utils/route-point-utils.js';
 import he from 'he';
 
-function createRoutePointTemplate(routePoint, destination, offers) {
+function createRoutePointTemplate(
+  routePoint,
+  destination,
+  offers
+) {
   const {dateFrom, dateTo, type, basePrice, isFavorite} = routePoint;
 
   const dateFormat = normalizeDate(dateFrom, DATE_FORMAT);
