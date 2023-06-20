@@ -5,9 +5,7 @@ export default class OffersModel extends Observable{
   #offers = [];
   #offersApiService = null;
 
-  constructor({
-    offersApiService
-  }) {
+  constructor({offersApiService}) {
     super();
     this.#offersApiService = offersApiService;
   }
@@ -39,7 +37,8 @@ export default class OffersModel extends Observable{
       this.#offers = await this.#offersApiService.offers;
     } catch(err) {
       this.#offers = [];
-    } finally{
+      this._notify(UpdateType.ERROR);
+    } finally {
       this._notify(UpdateType.INIT);
     }
   }
