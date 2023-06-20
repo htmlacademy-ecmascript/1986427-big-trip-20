@@ -10,6 +10,7 @@ import { sortByDay, sortByDurationTime, sortByPrice } from '../utils/route-point
 import {SortType, UpdateType, UserAction, FilterType, TimeLimit} from '../const.js';
 import {filter} from '../utils/common.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import NewRoutePointButtonView from '../view/new-route-point-button-view.js';
 
 export default class TripFormPresenter {
   #bigTripComponent = new BigTripView();
@@ -18,6 +19,7 @@ export default class TripFormPresenter {
   #destinationsModel = null;
   #offersModel = null;
   #filterModel = null;
+  #newEventButtonComponent = null;
   #routePointListComponent = new RoutePointListView();
   #sortComponent = null;
   #noRoutePointComponent = null;
@@ -37,8 +39,7 @@ export default class TripFormPresenter {
     routePointsModel,
     destinationsModel,
     offersModel,
-    filterModel,
-    onNewRoutePointDestroy
+    filterModel
   }) {
     this.#bigTripContainer = bigTripContainer;
     this.#routePointsModel = routePointsModel;
@@ -53,9 +54,22 @@ export default class TripFormPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onDataChange: this.#viewActionHandle,
-      onDestroy: onNewRoutePointDestroy
+      onDestroy: this.#handleNewEventFormClose,
+    });
+
+    this.#newEventButtonComponent = new NewRoutePointButtonView({
+      onClick: () => this.#handleNewEventButtonClick
     });
   }
+
+  #handleNewEventButtonClick = () => {
+    this.createRoutePoint();
+    this.#newEventButtonComponent.element.disabled = true;
+  };
+
+  #handleNewEventFormClose = () => {
+    this.#newEventButtonComponent.element.disabled = false;
+  };
 
   get routePoints() {
     this.#filterType = this.#filterModel.filter;

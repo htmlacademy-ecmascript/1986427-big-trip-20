@@ -44,7 +44,6 @@ export const getDatesDiff = (dateFrom, dateTo, timeUnit) => timeUnit
   ? dayjs(dateTo).diff(dayjs(dateFrom), timeUnit)
   : dayjs(dateTo).diff(dayjs(dateFrom));
 
-
 export function isRoutePointFuture(routePoint){
   return (dayjs().isBefore(routePoint.dateFrom));
 }

@@ -9,7 +9,6 @@ export default class NewRoutePointPresenter {
   #handleDestroy = null;
   #destinationsModel = null;
   #offersModel = null;
-
   #routePointEditComponent = null;
 
   constructor({

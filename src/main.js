@@ -41,7 +41,6 @@ const formPresenter = new TripFormPresenter({
   destinationsModel,
   offersModel,
   filterModel,
-  onNewRoutePointDestroy: newRoutePointFormCloseHandler
 });
 
 const newRoutePointButtonComponent = new NewRoutePointButtonView({
@@ -56,10 +55,6 @@ const filterPresenter = new FilterPresenter({
   filterModel,
   routePointsModel
 });
-
-function newRoutePointFormCloseHandler() {
-  newRoutePointButtonComponent.element.disabled = false;
-}
 
 render(
   new TripInfoView,

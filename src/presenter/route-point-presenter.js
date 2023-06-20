@@ -135,8 +135,13 @@ export default class RoutePointPresenter {
     );
   };
 
-  #handleFormSubmit = (update, destination, offers, offersByType) =>{
-    if(RoutePointsModel.isFilled(update)){
+  #handleFormSubmit = (
+    update,
+    destination,
+    offers,
+    offersByType
+  ) => {
+    if (RoutePointsModel.isFilled(update)) {
       this.#handleDataChange(
         UserAction.UPDATE_ROUTEPOINT,
         UpdateType.MINOR,
