@@ -47,7 +47,7 @@ export default class RoutePointsApiService extends ApiService {
 
   async addRoutePoint(routePoint) {
     const response = await this._load({
-      url: 'points',
+      url: POINTS_END_POINT,
       method: Method.POST,
       body: JSON.stringify(this.#adaptToServer(routePoint)),
       headers: new Headers({'Content-Type': 'application/json'}),
