@@ -1,7 +1,10 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {capitalizeName} from '../utils/common.js';
 
-function createFilterItemTemplate(filter, currentFilterType) {
+function createFilterItemTemplate(
+  filter,
+  currentFilterType
+) {
   const {type, count} = filter;
   const checkedAttr = type === currentFilterType ? 'checked' : '';
   const disabledAttr = !count ? 'disabled' : '';
@@ -21,7 +24,10 @@ function createFilterItemTemplate(filter, currentFilterType) {
     </div> `;
 }
 
-function createFilterTemplate(filterItems, currentFilterType) {
+function createFilterTemplate(
+  filterItems,
+  currentFilterType
+) {
   const itemsTemplate = filterItems
     .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');

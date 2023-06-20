@@ -5,7 +5,9 @@ export default class RoutePointsModel extends Observable{
   #routePoints = [];
   #routePointsApiService = null;
 
-  constructor({routePointsApiService}) {
+  constructor({
+    routePointsApiService
+  }) {
     super();
     this.#routePointsApiService = routePointsApiService;
   }
@@ -46,7 +48,10 @@ export default class RoutePointsModel extends Observable{
     }
   }
 
-  async addRoutePoint(updateType, update) {
+  async addRoutePoint(
+    updateType,
+    update
+  ) {
     try {
       const response = await this.#routePointsApiService.addRoutePoint(update);
       const newRoutePoint = this.#adaptToClient(response);

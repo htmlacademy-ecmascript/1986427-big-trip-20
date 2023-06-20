@@ -8,7 +8,9 @@ function createNoRoutePointTemplate(filterType) {
 export default class NoRoutePointView extends AbstractView {
   #filterType = null;
 
-  constructor({filterType}) {
+  constructor({
+    filterType
+  }) {
     super();
     this.#filterType = filterType;
   }
