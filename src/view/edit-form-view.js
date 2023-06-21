@@ -33,7 +33,8 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
        >
           ${capitalizeName(typeItem)}
       </label>
-      </div>`).join('');
+      </div>`)
+      .join('');
   }
 
   function createCityListTemplate(cities) {

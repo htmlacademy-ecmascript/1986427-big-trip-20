@@ -38,5 +38,4 @@ export default class DestinationsModel extends Observable{
       this._notify(UpdateType.INIT);
     }
   }
-
 }
