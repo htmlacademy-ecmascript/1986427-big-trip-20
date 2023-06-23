@@ -1,4 +1,4 @@
-export const BEARER_AUTHORIZATION_TOKEN = 'Basic w3wcFG7445lZXCHM';
+export const BEARER_AUTHORIZATION_TOKEN = 'Basic w3wcFG7405lZXCHM';
 export const BASE_END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
 export const OFFERS_END_POINT = 'offers';
 export const DESTINATIONS_END_POINT = 'destinations';

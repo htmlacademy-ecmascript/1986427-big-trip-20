@@ -42,7 +42,7 @@ export default class NewRoutePointPresenter {
 
     render(this.#routePointEditComponent, this.#routePointListContainer, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+    document.addEventListener('keydown', this.#escKeyDownHandle);
   }
 
   setSaving() {
@@ -74,7 +74,7 @@ export default class NewRoutePointPresenter {
     remove(this.#routePointEditComponent);
     this.#routePointEditComponent = null;
 
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    document.removeEventListener('keydown', this.#escKeyDownHandle);
   }
 
   #handleFormSubmit = (routePoint) => {
@@ -87,7 +87,7 @@ export default class NewRoutePointPresenter {
     }
   };
 
-  #escKeyDownHandler = (evt) => {
+  #escKeyDownHandle = (evt) => {
     if (evt.key === 'Esc' || evt.key === 'Escape') {
       evt.preventDefault();
       this.destroy();

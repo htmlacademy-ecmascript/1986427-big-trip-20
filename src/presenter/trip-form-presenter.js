@@ -43,7 +43,8 @@ export default class TripFormPresenter {
     routePointsModel,
     destinationsModel,
     offersModel,
-    filterModel
+    filterModel,
+    onNewRoutePointDestroy
   }) {
     this.#bigTripContainer = bigTripContainer;
     this.#routePointsModel = routePointsModel;
@@ -58,7 +59,7 @@ export default class TripFormPresenter {
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       onDataChange: this.#viewActionHandle,
-      onDestroy: this.#handleNewEventFormClose,
+      onDestroy: onNewRoutePointDestroy
     });
 
     this.#newEventButtonComponent = new NewRoutePointButtonView({
