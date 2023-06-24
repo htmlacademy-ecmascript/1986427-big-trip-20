@@ -9,10 +9,8 @@ export default class RoutePointPresenter {
   #routePointListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
-
   #routePointComponent = null;
   #editFormComponent = null;
-
   #destinationsModel = null;
   #routePointsModel = null;
   #offersModel = null;
@@ -69,7 +67,10 @@ export default class RoutePointPresenter {
       onDeleteClick: this.#handleDeleteClick
     });
 
-    if (prevRoutePointComponent === null || prevEditFormComponent === null) {
+    if (
+      prevRoutePointComponent === null
+      || prevEditFormComponent === null
+    ) {
       render(this.#routePointComponent, this.#routePointListContainer);
       return;
     }
@@ -142,10 +143,10 @@ export default class RoutePointPresenter {
     offersByType
   ) => {
     let minorType = UpdateType.MINOR;
-    const isPricesEqual = (firstPrice, secondPrice) => (firstPrice === null && secondPrice === null) || firstPrice === secondPrice;
+    const isPricesMatch = (firstPrice, secondPrice) => (firstPrice === null && secondPrice === null) || firstPrice === secondPrice;
     if (
       !isDateMatch(this.#routePoint.dateFrom, update.dateFrom)
-      || !isPricesEqual(this.#routePoint.basePrice, update.basePrice)
+      || !isPricesMatch(this.#routePoint.basePrice, update.basePrice)
     ) {
       minorType = UpdateType.PATCH;
     }
