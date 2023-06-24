@@ -275,7 +275,8 @@ export default class EditFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__type-group').addEventListener('change', (evt) => {
       this.updateElement({
-        type: evt.target.value
+        type: evt.target.value,
+        offers: [],
       });
     });
 

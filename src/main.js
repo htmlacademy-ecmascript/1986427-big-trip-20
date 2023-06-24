@@ -16,67 +16,86 @@ import {BASE_END_POINT, BEARER_AUTHORIZATION_TOKEN} from './const';
 const tripInfoContainer = document.querySelector('.trip-main');
 const bigTripContainer = document.querySelector('.trip-events');
 
-const routePointsModel = new RoutePointsModel({
-  routePointsApiService: new RoutePointsApiService(
-    BASE_END_POINT,
-    BEARER_AUTHORIZATION_TOKEN
-  )
-});
-const filterModel = new FilterModel();
-const destinationsModel = new DestinationsModel({
-  destinationsApiService: new DestinationsApiService(
-    BASE_END_POINT,
-    BEARER_AUTHORIZATION_TOKEN
-  )
-});
-const offersModel = new OffersModel({
-  offersApiService: new OffersApiService(
-    BASE_END_POINT,
-    BEARER_AUTHORIZATION_TOKEN
-  )
-});
-const formPresenter = new TripFormPresenter({
-  bigTripContainer,
-  routePointsModel,
-  destinationsModel,
-  offersModel,
-  filterModel,
-});
+const initApp = async () => {
+  const routePointsModel = new RoutePointsModel({
+    routePointsApiService: new RoutePointsApiService(
+      BASE_END_POINT,
+      BEARER_AUTHORIZATION_TOKEN
+    )
+  });
+  const filterModel = new FilterModel();
+  const destinationsModel = new DestinationsModel({
+    destinationsApiService: new DestinationsApiService(
+      BASE_END_POINT,
+      BEARER_AUTHORIZATION_TOKEN
+    )
+  });
+  const offersModel = new OffersModel({
+    offersApiService: new OffersApiService(
+      BASE_END_POINT,
+      BEARER_AUTHORIZATION_TOKEN
+    )
+  });
+  const formPresenter = new TripFormPresenter({
+    bigTripContainer,
+    routePointsModel,
+    destinationsModel,
+    offersModel,
+    filterModel,
+  });
+  const newRoutePointButtonComponent = new NewRoutePointButtonView({
+    onClick: () => {
+      formPresenter.createRoutePoint();
+      newRoutePointButtonComponent.element.disabled = true;
+    }
+  });
+  const filterPresenter = new FilterPresenter({
+    filterContainer: document.querySelector('.trip-controls__filters'),
+    filterModel,
+    routePointsModel
+  });
 
-const newRoutePointButtonComponent = new NewRoutePointButtonView({
-  onClick: () => {
-    formPresenter.createRoutePoint();
-    newRoutePointButtonComponent.element.disabled = true;
-  }
-});
+  render(
+    new TripInfoView,
+    tripInfoContainer,
+    RenderPosition.AFTERBEGIN
+  );
 
-const filterPresenter = new FilterPresenter({
-  filterContainer: document.querySelector('.trip-controls__filters'),
-  filterModel,
-  routePointsModel
-});
+  render(
+    newRoutePointButtonComponent,
+    tripInfoContainer
+  );
 
-render(
-  new TripInfoView,
-  tripInfoContainer,
-  RenderPosition.AFTERBEGIN
-);
-render(
-  newRoutePointButtonComponent,
-  tripInfoContainer
-);
-filterPresenter.init();
-render(
-  new BigTripView(),
-  bigTripContainer
-);
-formPresenter.init();
-routePointsModel.init()
-  .finally(() => {
+  filterPresenter.init();
+  render(
+    new BigTripView(),
+    bigTripContainer
+  );
+
+  formPresenter.init();
+  try {
+    await routePointsModel.init();
+  } catch(err) {
+    throw new Error('Don\'t load routePoints');
+  } finally {
     render(
       newRoutePointButtonComponent,
       tripInfoContainer
     );
-  });
-destinationsModel.init();
-offersModel.init();
+  }
+
+  try {
+    await destinationsModel.init();
+  } catch(err) {
+    throw new Error('Don\'t load destinationsModel');
+  }
+
+  try {
+    await offersModel.init();
+  } catch(err) {
+    throw new Error('Don\'t load offersModel');
+  }
+
+};
+
+initApp();
