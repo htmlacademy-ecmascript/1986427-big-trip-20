@@ -121,7 +121,7 @@ export default class TripFormPresenter {
     this.#newRoutePointPresenter.init();
   }
 
-  #renderTripInfo() {
+  #renderTravelInfo() {
     const routePoints = [
       ...this.#routePointsModel.routePoints
     ].sort(sortByDay);
@@ -214,7 +214,7 @@ export default class TripFormPresenter {
 
   #renderBigTrip(){
     render(this.#bigTripComponent, this.#bigTripContainer);
-    this.#renderTripInfo();
+    this.#renderTravelInfo();
     render(this.#newRoutePointButtonComponent, this.#tripInfoContainer);
 
     if (this.#isLoading) {
@@ -288,7 +288,7 @@ export default class TripFormPresenter {
       case UpdateType.PATCH:
         this.#routePointsPresenters.get(data.id).init(data);
         remove(this.#tripInfoComponent);
-        this.#renderTripInfo();
+        this.#renderTravelInfo();
         break;
       case UpdateType.MINOR:
         this.#clearTripForm();
@@ -308,7 +308,11 @@ export default class TripFormPresenter {
         this.#areRoutePointsLoaded = true;
         break;
       case UpdateType.INIT:
-        if (!this.#areDestinationsLoaded || !this.#areOffersLoaded || !this.#areRoutePointsLoaded) {
+        if (
+          !this.#areDestinationsLoaded
+          || !this.#areOffersLoaded
+          || !this.#areRoutePointsLoaded
+        ) {
           return;
         }
         this.#isLoading = false;
