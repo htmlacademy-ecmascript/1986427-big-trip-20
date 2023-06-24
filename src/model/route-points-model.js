@@ -24,6 +24,7 @@ export default class RoutePointsModel extends Observable{
       this.#routePoints = [];
       this._notify(UpdateType.ERROR);
     } finally {
+      this._notify(UpdateType.ROUTEPOINTS);
       this._notify(UpdateType.INIT);
     }
   }

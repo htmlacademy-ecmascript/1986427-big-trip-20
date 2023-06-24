@@ -8,6 +8,4 @@ export const filter = {
   [FilterType.PRESENT]: (routePoints) => routePoints.filter((routePoint) => isRoutePointPresent(routePoint)),
 };
 
-export function capitalizeName(string) {
-  return `${string[0].toUpperCase()}${string.slice(1)}`;
-}
+export const capitalizeName = (string) => `${string[0].toUpperCase()}${string.slice(1)}`;

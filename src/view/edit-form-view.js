@@ -33,7 +33,8 @@ function createEditFormTemplate(routePoint, destination, offers, cityNames, offe
        >
           ${capitalizeName(typeItem)}
       </label>
-      </div>`).join('');
+      </div>`)
+      .join('');
   }
 
   function createCityListTemplate(cities) {
@@ -274,7 +275,8 @@ export default class EditFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__type-group').addEventListener('change', (evt) => {
       this.updateElement({
-        type: evt.target.value
+        type: evt.target.value,
+        offers: [],
       });
     });
 
@@ -299,7 +301,7 @@ export default class EditFormView extends AbstractStatefulView {
       }
     });
 
-    this.element.querySelector('.event__field-group--price').addEventListener('change', (evt) => {
+    this.element.querySelector('.event__input--price').addEventListener('change', (evt) => {
       this.updateElement({
         basePrice: +evt.target.value,
       });

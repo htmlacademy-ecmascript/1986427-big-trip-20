@@ -26,6 +26,9 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
   INIT: 'INIT',
   ERROR: 'ERROR',
+  DESTINATIONS: 'DESTINATIONS',
+  OFFERS:'OFFERS',
+  ROUTEPOINTS: 'ROUTEPOINTS',
 };
 
 export const EMPTY_ROUTE_POINT = {
@@ -63,3 +66,11 @@ export const Mode = {
   EDITING: 'EDITING',
 };
 
+export const FormatDatePattern = {
+  DATETIME: 'DD/MM/YY HH:mm',
+  DATE: 'MMM D',
+  TIME: 'HH:mm',
+  TRIP_INFO_DATE: 'D MMM',
+};
+
+export const ROUTE_POINTS_COUNT_MAX = 3;
