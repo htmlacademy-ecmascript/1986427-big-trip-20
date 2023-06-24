@@ -64,14 +64,12 @@ export default class TripFormPresenter {
     this.#offersModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
 
-    const handleNewRoutePointButtonClick = () => {
-      this.#isCreated = true;
-      this.createRoutePoint();
-      this.#newRoutePointButtonComponent.element.disabled = true;
-    };
-
     this.#newRoutePointButtonComponent = new NewRoutePointButtonView({
-      onClick: handleNewRoutePointButtonClick
+      onClick: () => {
+        this.#isCreated = true;
+        this.createRoutePoint();
+        this.#newRoutePointButtonComponent.element.disabled = true;
+      }
     });
 
     const handleNewRoutePointFormClose = () => {
@@ -96,6 +94,7 @@ export default class TripFormPresenter {
     this.#filterType = this.#filterModel.filter;
     const routePoints = this.#routePointsModel.routePoints;
     const filteredRoutePoints = filter[this.#filterType](routePoints);
+
     if (this.#currentSortType === SortType.DURATION_TIME) {
       return filteredRoutePoints.sort(sortByDurationTime);
     }
@@ -209,13 +208,19 @@ export default class TripFormPresenter {
       onModeChange: this.#handleModeChange
     });
     routePointPresenter.init(routePoint);
-    this.#routePointsPresenters.set(routePoint.id, routePointPresenter);
+    this.#routePointsPresenters.set(
+      routePoint.id,
+      routePointPresenter
+    );
   }
 
   #renderBigTrip(){
     render(this.#bigTripComponent, this.#bigTripContainer);
     this.#renderTravelInfo();
-    render(this.#newRoutePointButtonComponent, this.#tripInfoContainer);
+    render(
+      this.#newRoutePointButtonComponent,
+      this.#tripInfoContainer
+    );
 
     if (this.#isLoading) {
       this.#renderLoading();
@@ -331,7 +336,7 @@ export default class TripFormPresenter {
   };
 
   #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
+    if (sortType === this.#currentSortType) {
       return;
     }
     this.#currentSortType = sortType;
