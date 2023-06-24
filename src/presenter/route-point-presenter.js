@@ -3,7 +3,7 @@ import RoutePointView from '../view/route-point-view.js';
 import EditFormView from '../view/edit-form-view.js';
 import {UserAction, UpdateType, Mode} from '../const.js';
 import RoutePointsModel from '../model/route-points-model.js';
-
+import {isDateMatch} from '../utils/route-point-utils.js';
 
 export default class RoutePointPresenter {
   #routePointListContainer = null;
@@ -141,10 +141,19 @@ export default class RoutePointPresenter {
     offers,
     offersByType
   ) => {
+    let minorType = UpdateType.MINOR;
+    const isPricesEqual = (firstPrice, secondPrice) => (firstPrice === null && secondPrice === null) || firstPrice === secondPrice;
+    if (
+      !isDateMatch(this.#routePoint.dateFrom, update.dateFrom)
+      || !isPricesEqual(this.#routePoint.basePrice, update.basePrice)
+    ) {
+      minorType = UpdateType.PATCH;
+    }
+
     if (RoutePointsModel.isFilled(update)) {
       this.#handleDataChange(
         UserAction.UPDATE_ROUTEPOINT,
-        UpdateType.MINOR,
+        minorType,
         update,
         destination,
         offers,

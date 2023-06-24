@@ -301,7 +301,7 @@ export default class EditFormView extends AbstractStatefulView {
       }
     });
 
-    this.element.querySelector('.event__field-group--price').addEventListener('change', (evt) => {
+    this.element.querySelector('.event__input--price').addEventListener('change', (evt) => {
       this.updateElement({
         basePrice: +evt.target.value,
       });
