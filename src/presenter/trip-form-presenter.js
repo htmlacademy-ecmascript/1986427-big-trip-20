@@ -96,7 +96,6 @@ export default class TripFormPresenter {
     this.#filterType = this.#filterModel.filter;
     const routePoints = this.#routePointsModel.routePoints;
     const filteredRoutePoints = filter[this.#filterType](routePoints);
-
     if (this.#currentSortType === SortType.DURATION_TIME) {
       return filteredRoutePoints.sort(sortByDurationTime);
     }
@@ -106,7 +105,6 @@ export default class TripFormPresenter {
     if (this.#currentSortType === SortType.DEFAULT) {
       return filteredRoutePoints.sort(sortByDay);
     }
-
     return filteredRoutePoints;
   }
 
@@ -158,15 +156,6 @@ export default class TripFormPresenter {
   #renderLoading() {
     render(
       this.#loadingComponent,
-      this.#bigTripComponent.element,
-      RenderPosition.AFTERBEGIN
-    );
-  }
-
-  #renderServerNotAvailableMessage() {
-    this.#showErrorMessage = true;
-    render(
-      this.#notAvailableComponent,
       this.#bigTripComponent.element,
       RenderPosition.AFTERBEGIN
     );
@@ -242,7 +231,12 @@ export default class TripFormPresenter {
     }
     if (this.#showErrorMessage) {
       this.#newRoutePointButtonComponent.element.disabled = true;
-      this.#renderServerNotAvailableMessage();
+      this.#showErrorMessage = true;
+      render(
+        this.#notAvailableComponent,
+        this.#bigTripComponent.element,
+        RenderPosition.AFTERBEGIN
+      );
       return;
     }
     this.#renderSort();
@@ -258,94 +252,77 @@ export default class TripFormPresenter {
     this.#routePointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = async (
-    actionType,
-    updateType,
-    update
-  ) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
-
-    if (actionType === UserAction.UPDATE_ROUTEPOINT) {
-      this.#routePointsPresenters.get(update.id).setSaving();
-      try {
-        await this.#routePointsModel.updateRoutePoint(
-          updateType,
-          update
-        );
-      } catch(err) {
-        this.#routePointsPresenters.get(update.id).setAborting();
-      }
+    switch (actionType) {
+      case UserAction.UPDATE_ROUTEPOINT:
+        this.#routePointsPresenters.get(update.id).setSaving();
+        try {
+          await this.#routePointsModel.updateRoutePoint(updateType, update);
+        } catch(err) {
+          this.#routePointsPresenters.get(update.id).setAborting();
+        }
+        break;
+      case UserAction.ADD_ROUTEPOINT:
+        this.#newRoutePointPresenter.setSaving();
+        try {
+          await this.#routePointsModel.addRoutePoint(updateType, update);
+        } catch(err) {
+          this.#newRoutePointPresenter.setAborting();
+        }
+        break;
+      case UserAction.DELETE_ROUTEPOINT:
+        this.#routePointsPresenters.get(update.id).setDeleting();
+        try {
+          await this.#routePointsModel.deleteRoutePoint(updateType, update);
+        } catch(err) {
+          this.#routePointsPresenters.get(update.id).setAborting();
+        }
+        break;
     }
-
-    if (actionType === UserAction.ADD_ROUTEPOINT) {
-      this.#newRoutePointPresenter.setSaving();
-      try {
-        await this.#routePointsModel.addRoutePoint(
-          updateType,
-          update
-        );
-      } catch(err) {
-        this.#newRoutePointPresenter.setAborting();
-      }
-    }
-
-    if (actionType === UserAction.DELETE_ROUTEPOINT) {
-      this.#routePointsPresenters.get(update.id).setDeleting();
-      try {
-        await this.#routePointsModel.deleteRoutePoint(
-          updateType,
-          update
-        );
-      } catch(err) {
-        this.#routePointsPresenters.get(update.id).setAborting();
-      }
-    }
-
     this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
-    if (updateType === UpdateType.PATCH) {
-      this.#routePointsPresenters.get(data.id).init(data);
-      remove(this.#tripInfoComponent);
-      this.#renderTripInfo();
-    }
-    if (updateType === UpdateType.MINOR) {
-      this.#clearTripForm();
-      this.#renderBigTrip();
-    }
-    if (updateType === UpdateType.MAJOR) {
-      this.#clearTripForm({resetSortType: true});
-      this.#renderBigTrip();
-    }
-    if (updateType === UpdateType.DESTINATIONS) {
-      this.#areDestinationsLoaded = true;
-    }
-    if (updateType === UpdateType.OFFERS) {
-      this.#areOffersLoaded = true;
-    }
-    if (updateType === UpdateType.ROUTEPOINTS) {
-      this.#areRoutePointsLoaded = true;
-    }
-    if (updateType === UpdateType.INIT) {
-      if (
-        !this.#areDestinationsLoaded
-          || !this.#areOffersLoaded
-          || !this.#areRoutePointsLoaded
-      ) {
-        return;
-      }
-      this.#isLoading = false;
-      remove(this.#loadingComponent);
-      this.#clearTripForm();
-      this.#renderBigTrip();
-    }
-    if (updateType === UpdateType.INIT) {
-      this.#isLoading = false;
-      this.#showErrorMessage = true;
-      remove(this.#loadingComponent);
-      this.#clearTripForm();
-      this.#renderBigTrip();
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#routePointsPresenters.get(data.id).init(data);
+        remove(this.#tripInfoComponent);
+        this.#renderTripInfo();
+        break;
+      case UpdateType.MINOR:
+        this.#clearTripForm();
+        this.#renderBigTrip();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearTripForm({resetSortType: true});
+        this.#renderBigTrip();
+        break;
+      case UpdateType.DESTINATIONS:
+        this.#areDestinationsLoaded = true;
+        break;
+      case UpdateType.OFFERS:
+        this.#areOffersLoaded = true;
+        break;
+      case UpdateType.ROUTEPOINTS:
+        this.#areRoutePointsLoaded = true;
+        break;
+      case UpdateType.INIT:
+        if (!this.#areDestinationsLoaded || !this.#areOffersLoaded || !this.#areRoutePointsLoaded) {
+          return;
+        }
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#clearTripForm();
+        this.#renderBigTrip();
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        this.#showErrorMessage = true;
+        remove(this.#loadingComponent);
+        this.#clearTripForm();
+        this.#renderBigTrip();
+        break;
     }
   };
 
